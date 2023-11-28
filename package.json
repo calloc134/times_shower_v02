@@ -1,0 +1,19 @@
+{
+  "name": "times_shower_02",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "drizzle-kit": "^0.20.6",
+    "drizzle-orm": "^0.29.0",
+    "postgres": "^3.4.3",
+    "vite-node": "^0.34.6"
+  }
+}
