@@ -4,7 +4,9 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc ./src/index.ts --outDir dist",
+    "start": "node ./dist/src/index.js",
+    "start:dev": "pnpm run build && pnpm run start"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,8 @@
     "drizzle-kit": "^0.20.6",
     "drizzle-orm": "^0.29.0",
     "postgres": "^3.4.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2",
     "vite-node": "^0.34.6"
   }
 }
