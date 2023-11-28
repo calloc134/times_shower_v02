@@ -30,12 +30,21 @@ client.on("messageCreate", (message: Message) => {
   const { author, content, attachments, channelId } = message;
   console.debug(`messageCreate: ${author.id} ${content} ${channelId}`);
 
+  // ユーザが指定したユーザで、かつメッセージを受信するチャンネルが指定したチャンネルの場合
   if (author.id === userId && channelId === sourceChannelId) {
+    // 送信先チャンネルのコンテキストが取得できていない場合はエラー
     if (!targetChannelContext) {
       console.error("targetChannelContext is undefined");
       return;
     }
 
+    // メッセージが返信である場合は送信しないようにする
+    if (message.reference) {
+      console.debug("message is reply");
+      return;
+    }
+
+    // 添付ファイルがある場合は送信
     if (attachments.size > 0) {
       targetChannelContext.send({
         files: attachments.map((attachment) => {
@@ -48,6 +57,7 @@ client.on("messageCreate", (message: Message) => {
       });
     }
 
+    // コンテンツがある場合は送信
     if (content) {
       targetChannelContext.send(content);
     }
@@ -61,6 +71,7 @@ client.once("ready", () => {
     console.log(client.user.tag);
   }
 
+  // 送信先チャンネルのコンテキストを取得
   targetChannelContext = client.channels.cache.get(
     targetChannelId
   ) as TextChannel;
