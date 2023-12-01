@@ -1,0 +1,1 @@
+ALTER TABLE "channel_list" ADD COLUMN "type" integer NOT NULL;

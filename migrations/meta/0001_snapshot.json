@@ -1,6 +1,6 @@
 {
-  "id": "0c3f9023-b878-484c-a6d8-86578b371750",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "7db6db9d-0824-4d3c-9c8e-f9a5940b0b34",
+  "prevId": "0c3f9023-b878-484c-a6d8-86578b371750",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -23,6 +23,12 @@
         "channel_name": {
           "name": "channel_name",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         }
