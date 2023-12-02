@@ -33,7 +33,7 @@ const main = async () => {
     removeSourceChannelList,
     addTargetChannelList,
     removeTargetChannelList,
-  } = await dbClosure(db_url, client);
+  } = await dbClosure(db_url);
 
   // 特定のユーザーからのメッセージを特定のチャンネルに転送する
   client.on("messageCreate", async (message: Message) => {
@@ -62,7 +62,15 @@ const main = async () => {
     }
 
     // メッセージを送信するチャンネルのセットを取得
-    const target_channel_list = await getTargetChannelList();
+    const target_channel_list = (await getTargetChannelList()).map(
+      (channel) => {
+        // チャンネルがない場合は何もしない
+        if (!channel) {
+          return;
+        }
+        return client.channels.cache.get(channel) as TextChannel;
+      }
+    );
 
     // 添付ファイルがある場合はそれぞれ送信
     if (attachments.size > 0) {
@@ -214,9 +222,7 @@ const main = async () => {
           return response.status(200).send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
-              content: `チャンネルID一覧: ${target_channel_list
-                .map((channel) => channel?.id)
-                .join(", ")}`,
+              content: `チャンネルID一覧: ${target_channel_list.join(", ")}`,
             },
           });
         }

@@ -6,7 +6,7 @@ import { ulid } from "ulidx";
 import { channel_list } from "./schema";
 import { Client, TextChannel } from "discord.js";
 
-const dbClosure = async (db_url: string, discord_client: Client) => {
+const dbClosure = async (db_url: string) => {
   // ポスグレに接続してクライアントを作成
   const db = drizzle(postgres(db_url));
 
@@ -23,7 +23,7 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
       | Set<string>
       | undefined;
     if (cache) {
-      // console.debug(cache);
+      console.debug("cache hit", cache);
       return cache;
     }
 
@@ -43,6 +43,8 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
     // キャッシュにデータを追加する
     await memory_cache.set("source_channel_list", result);
 
+    console.debug("cache miss", result);
+
     // 結果を返却する
     return result;
   };
@@ -51,7 +53,7 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
   const getTargetChannelList = async () => {
     // もしキャッシュにデータがあればそれを返却する
     const cache = (await memory_cache.get("target_channel_list")) as
-      | (TextChannel | undefined)[]
+      | Array<string>
       | undefined;
     if (cache) {
       console.debug("cache hit", cache);
@@ -69,11 +71,7 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
       );
 
     // 結果を求める
-    const result = channelList.map((channel) => {
-      return discord_client.channels.cache.get(
-        channel.channel_id
-      ) as TextChannel;
-    });
+    const result = channelList.map((channel) => channel.channel_id);
 
     // キャッシュにデータを追加する
     await memory_cache.set("target_channel_list", result);
