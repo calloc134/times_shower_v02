@@ -6,7 +6,7 @@ import {
 } from "discord-interactions";
 import fastify from "fastify";
 import { fastifyRawBody } from "fastify-raw-body";
-import { discord_token, user_id, db_url, port } from "./env";
+import { discord_token, user_id, db_url, port, public_key } from "./env";
 
 import {
   SHOW_SOURCE_CHANNEL_ID_COMMAND,
@@ -142,11 +142,11 @@ const main = async () => {
 
       // 署名の検証を行う
       const isValidRequest = verifyKey(
+        request.rawBody || "",
         // @ts-expect-error
-        request.rawBody,
         signature,
         timestamp,
-        process.env.PUBLIC_KEY
+        public_key
       );
 
       // 署名の検証に失敗した場合はその時点で401エラーを返す
