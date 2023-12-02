@@ -23,6 +23,7 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
       | Set<string>
       | undefined;
     if (cache) {
+      console.debug(cache);
       return cache;
     }
 
