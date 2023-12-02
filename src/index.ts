@@ -442,6 +442,7 @@ const main = async () => {
   server
     .listen({
       port: 3000,
+      host: "0.0.0.0",
     })
     .then((address) => {
       server.log.info(`Server listening on ${address}`);
