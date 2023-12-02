@@ -20,7 +20,7 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
   const getSourceChannelList = async () => {
     // もしキャッシュにデータがあればそれを返却する
     const cache = (await memory_cache.get("source_channel_list")) as
-      | Set<number>
+      | Set<string>
       | undefined;
     if (cache) {
       return cache;
@@ -69,7 +69,7 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
     // 結果を求める
     const result = channelList.map((channel) => {
       return discord_client.channels.cache.get(
-        channel.channel_id.toString()
+        channel.channel_id
       ) as TextChannel;
     });
 
@@ -81,11 +81,11 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
   };
 
   // 送信元チャンネルのデータを追加する関数
-  const addSourceChannelList = async (channelId: number) => {
+  const addSourceChannelList = async (channel_id: string) => {
     // データベースに送信元チャンネルのデータを追加する
     await db.insert(channel_list).values({
       ulid: ulid(),
-      channel_id: channelId, // チャンネルID
+      channel_id: channel_id, // チャンネルID
       type: 0, // 送信元チャンネル
     });
 
@@ -94,11 +94,11 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
   };
 
   // 転送先チャンネルのデータを追加する関数
-  const addTargetChannelList = async (channelId: number) => {
+  const addTargetChannelList = async (channel_id: string) => {
     // データベースに転送先チャンネルのデータを追加する
     await db.insert(channel_list).values({
       ulid: ulid(),
-      channel_id: channelId, // チャンネルID
+      channel_id: channel_id, // チャンネルID
       type: 1, // 転送先チャンネル
     });
 
@@ -107,10 +107,10 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
   };
 
   // 送信元チャンネルのデータを削除する関数
-  const removeSourceChannelList = async (channelId: number) => {
+  const removeSourceChannelList = async (channel_id: string) => {
     // データベースから送信元チャンネルのデータを削除する
     await db.delete(channel_list).where(
-      eq(channel_list.channel_id, channelId) // チャンネルID
+      eq(channel_list.channel_id, channel_id) // チャンネルID
     );
 
     // キャッシュを削除する
@@ -118,10 +118,10 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
   };
 
   // 転送先チャンネルのデータを削除する関数
-  const removeTargetChannelList = async (channelId: number) => {
+  const removeTargetChannelList = async (channel_id: string) => {
     // データベースから転送先チャンネルのデータを削除する
     await db.delete(channel_list).where(
-      eq(channel_list.channel_id, channelId) // チャンネルID
+      eq(channel_list.channel_id, channel_id) // チャンネルID
     );
 
     // キャッシュを削除する

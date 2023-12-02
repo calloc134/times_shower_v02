@@ -2,7 +2,7 @@ import { integer, text, pgTable } from "drizzle-orm/pg-core";
 
 const channel_list = pgTable("channel_list", {
   ulid: text("ulid").primaryKey().notNull(), // ULID
-  channel_id: integer("channel_id").notNull(), // チャンネルID
+  channel_id: text("channel_id").notNull(), // チャンネルID
   type: integer("type").notNull(), // チャンネルのタイプ
   // 0: 送信元チャンネル
   // 1: 転送先チャンネル

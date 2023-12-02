@@ -1,0 +1,1 @@
+ALTER TABLE "channel_list" ALTER COLUMN "channel_id" SET DATA TYPE text;

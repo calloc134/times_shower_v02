@@ -35,32 +35,29 @@ const main = async () => {
     removeTargetChannelList,
   } = await dbClosure(db_url, client);
 
-  // 特定のユーザーのID
-  const userId = user_id;
-
   // 特定のユーザーからのメッセージを特定のチャンネルに転送する
   client.on("messageCreate", async (message: Message) => {
     const { author, content, attachments } = message;
-    const channelId = Number(message.channelId);
-    console.log(`messageCreate: ${author.id} ${content} ${channelId}`);
+    const channel_id = message.channelId;
+    console.log(`messageCreate: ${author.id} ${content} ${channel_id}`);
 
     // ユーザが指定したユーザでない場合は何もしない
-    if (author.id !== userId) {
+    if (author.id !== user_id) {
       return;
     }
 
     // 送信元チャンネルのセットを取得
     const source_channel_set = await getSourceChannelList();
     // 登録されていない場合は何もしない
-    if (!source_channel_set.has(channelId)) {
-      console.log("channel is not registered");
+    if (!source_channel_set.has(channel_id)) {
+      console.error("channel is not registered");
       return;
     }
 
     // 長さが0でない場合は、データベースに登録されているので、メッセージを送信する
     // メッセージが返信である場合は送信しないようにする
     if (message.reference) {
-      console.log("message is reply");
+      console.error("message is reply");
       return;
     }
 
