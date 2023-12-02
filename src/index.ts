@@ -6,7 +6,7 @@ import {
 } from "discord-interactions";
 import fastify from "fastify";
 import { fastifyRawBody } from "fastify-raw-body";
-import { discord_token, user_id, db_url } from "./env";
+import { discord_token, user_id, db_url, port } from "./env";
 
 import {
   SHOW_SOURCE_CHANNEL_ID_COMMAND,
@@ -441,7 +441,7 @@ const main = async () => {
 
   server
     .listen({
-      port: 3000,
+      port: Number(port),
       host: "0.0.0.0",
     })
     .then((address) => {
