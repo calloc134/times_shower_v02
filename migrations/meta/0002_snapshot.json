@@ -1,0 +1,80 @@
+{
+  "id": "2ca55223-dfd1-4054-b81d-309dbe40c7c7",
+  "prevId": "7db6db9d-0824-4d3c-9c8e-f9a5940b0b34",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "channel_list": {
+      "name": "channel_list",
+      "schema": "",
+      "columns": {
+        "ulid": {
+          "name": "ulid",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "channel_id": {
+          "name": "channel_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "watch_list": {
+      "name": "watch_list",
+      "schema": "",
+      "columns": {
+        "ulid": {
+          "name": "ulid",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "message_id": {
+          "name": "message_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "message_content": {
+          "name": "message_content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {
+      "\"channel_list\".\"id\"": "\"channel_list\".\"ulid\"",
+      "\"watch_list\".\"id\"": "\"watch_list\".\"ulid\""
+    }
+  }
+}

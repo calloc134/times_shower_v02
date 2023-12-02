@@ -15,6 +15,13 @@
       "when": 1701415575566,
       "tag": "0001_bizarre_red_wolf",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1701436671832,
+      "tag": "0002_windy_raza",
+      "breakpoints": true
     }
   ]
 }
