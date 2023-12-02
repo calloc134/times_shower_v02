@@ -42,7 +42,7 @@ const main = async () => {
   client.on("messageCreate", async (message: Message) => {
     const { author, content, attachments } = message;
     const channelId = Number(message.channelId);
-    console.debug(`messageCreate: ${author.id} ${content} ${channelId}`);
+    console.log(`messageCreate: ${author.id} ${content} ${channelId}`);
 
     // ユーザが指定したユーザでない場合は何もしない
     if (author.id !== userId) {
@@ -53,14 +53,14 @@ const main = async () => {
     const source_channel_set = await getSourceChannelList();
     // 登録されていない場合は何もしない
     if (!source_channel_set.has(channelId)) {
-      console.debug("channel is not registered");
+      console.log("channel is not registered");
       return;
     }
 
     // 長さが0でない場合は、データベースに登録されているので、メッセージを送信する
     // メッセージが返信である場合は送信しないようにする
     if (message.reference) {
-      console.debug("message is reply");
+      console.log("message is reply");
       return;
     }
 
@@ -96,9 +96,9 @@ const main = async () => {
 
   //Botがきちんと起動したか確認
   client.once("ready", () => {
-    console.log("Ready!");
+    console.info("Ready!");
     if (client.user) {
-      console.log(client.user.tag);
+      console.info(client.user.tag);
     }
   });
 
@@ -118,22 +118,19 @@ const main = async () => {
 
   // ルーティングの定義
   server.get("/", (_, response) => {
-    server.log.info("Handling GET request");
+    console.info("Handling GET request");
     response.send({ hello: "world" });
   });
 
   // リクエストの前処理として署名の検証を行う
   server.addHook("preHandler", async (request, response) => {
     // ヘッダの内容をログとして出力
-    server.log.info(
-      "x-signature-ed25519",
-      request.headers["x-signature-ed25519"]
-    );
-    server.log.info(
+    console.info("x-signature-ed25519", request.headers["x-signature-ed25519"]);
+    console.info(
       "x-signature-timestamp",
       request.headers["x-signature-timestamp"]
     );
-    server.log.info("rawBody", request.rawBody);
+    console.info("rawBody", request.rawBody);
 
     // 形式がPOSTの場合のみ署名の検証を行う
     if (request.method === "POST") {
@@ -151,7 +148,7 @@ const main = async () => {
 
       // 署名の検証に失敗した場合はその時点で401エラーを返す
       if (!isValidRequest) {
-        server.log.info("Invalid Request");
+        console.info("Invalid Request");
         return response.status(401).send({ error: "Bad request signature " });
       }
     }
@@ -168,7 +165,7 @@ const main = async () => {
     // メッセージのタイプに応じて処理を分岐
     if (message.type === InteractionType.PING) {
       // もし、メッセージのタイプがPONGだった場合はPONGを返す
-      server.log.info("Handling Ping request");
+      console.info("Handling Ping request");
       response.send({
         type: InteractionResponseType.PONG,
       });
@@ -179,7 +176,7 @@ const main = async () => {
 
     // もし投稿者が指定されたユーザでない場合は400エラーを返す
     if (user.id !== user_id) {
-      server.log.error("User is not allowed");
+      console.error("User is not allowed");
       return response.status(200).send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -190,7 +187,7 @@ const main = async () => {
 
     if (message.type === InteractionType.APPLICATION_COMMAND) {
       // もし、メッセージのタイプがAPPLICATION_COMMANDだった場合はコマンドの処理を行う
-      server.log.info("Handling Application Command request");
+      console.info("Handling Application Command request");
 
       // コマンドの種類に応じて処理を分岐
       switch (message.data.name) {
@@ -201,7 +198,7 @@ const main = async () => {
           const source_channel_set = await getSourceChannelList();
 
           // チャンネルリストを表示する
-          server.log.info("Success to show channel IDs");
+          console.info("Success to show channel IDs");
           return response.status(200).send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
@@ -216,7 +213,7 @@ const main = async () => {
           const target_channel_list = await getTargetChannelList();
 
           // チャンネルリストを表示する
-          server.log.info("Success to show channel IDs");
+          console.info("Success to show channel IDs");
           return response.status(200).send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
@@ -235,7 +232,7 @@ const main = async () => {
 
           // チャンネルIDがない場合は400エラーを返す
           if (!channelId) {
-            server.log.error("Channel ID is empty");
+            console.error("Channel ID is empty");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -247,9 +244,9 @@ const main = async () => {
             // チャンネルIDを追加する
             await addTargetChannelList(channelId);
           } catch (error) {
-            console.debug(error);
+            console.error(error);
             // もし、チャンネルIDの追加に失敗した場合は500エラーを返す
-            server.log.error("Failed to add channel ID");
+            console.error("Failed to add channel ID");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -259,7 +256,7 @@ const main = async () => {
           }
 
           // チャンネルIDを追加したことを返す
-          server.log.info("Success to add channel ID");
+          console.info("Success to add channel ID");
           return response.status(200).send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
@@ -276,7 +273,7 @@ const main = async () => {
 
           // チャンネルIDがない場合は400エラーを返す
           if (!channelId) {
-            server.log.error("Channel ID is empty");
+            console.error("Channel ID is empty");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -288,9 +285,9 @@ const main = async () => {
             // チャンネルIDを追加する
             await addSourceChannelList(channelId);
           } catch (error) {
-            console.debug(error);
+            console.error(error);
             // もし、チャンネルIDの追加に失敗した場合は500エラーを返す
-            server.log.error("Failed to add channel ID");
+            console.error("Failed to add channel ID");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -300,7 +297,7 @@ const main = async () => {
           }
 
           // チャンネルIDを追加したことを返す
-          server.log.info("Success to add channel ID");
+          console.info("Success to add channel ID");
           return response.status(200).send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
@@ -314,7 +311,7 @@ const main = async () => {
 
           // もし投稿者が指定されたユーザでない場合は400エラーを返す
           if (user.id !== user_id) {
-            server.log.error("User is not allowed");
+            console.error("User is not allowed");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -331,7 +328,7 @@ const main = async () => {
 
           // チャンネルIDがない場合は400エラーを返す
           if (!channelId) {
-            server.log.error("Channel ID is empty");
+            console.error("Channel ID is empty");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -344,9 +341,9 @@ const main = async () => {
             // クエリを削除する
             await removeSourceChannelList(channelId);
           } catch (error) {
-            console.debug(error);
+            console.error(error);
             // もし、チャンネルIDの削除に失敗した場合は500エラーを返す
-            server.log.error("Failed to remove channel ID");
+            console.error("Failed to remove channel ID");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -356,7 +353,7 @@ const main = async () => {
           }
 
           // チャンネルIDを削除したことを返す
-          server.log.info("Success to remove channel ID");
+          console.info("Success to remove channel ID");
           return response.status(200).send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
@@ -370,7 +367,7 @@ const main = async () => {
 
           // もし投稿者が指定されたユーザでない場合は400エラーを返す
           if (user.id !== user_id) {
-            server.log.error("User is not allowed");
+            console.error("User is not allowed");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -387,7 +384,7 @@ const main = async () => {
 
           // チャンネルIDがない場合は400エラーを返す
           if (!channelId) {
-            server.log.error("Channel ID is empty");
+            console.error("Channel ID is empty");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -400,9 +397,9 @@ const main = async () => {
             // クエリを削除する
             await removeTargetChannelList(channelId);
           } catch (error) {
-            console.debug(error);
+            console.error(error);
             // もし、チャンネルIDの削除に失敗した場合は500エラーを返す
-            server.log.error("Failed to remove channel ID");
+            console.error("Failed to remove channel ID");
             return response.status(200).send({
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
@@ -412,7 +409,7 @@ const main = async () => {
           }
 
           // チャンネルIDを削除したことを返す
-          server.log.info("Success to remove channel ID");
+          console.info("Success to remove channel ID");
           return response.status(200).send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
@@ -421,7 +418,7 @@ const main = async () => {
           });
         }
         default: {
-          server.log.error("Unknown Command");
+          console.error("Unknown Command");
           response.status(200).send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
@@ -431,7 +428,7 @@ const main = async () => {
         }
       }
     } else {
-      server.log.error("Unknown Type");
+      console.error("Unknown Type");
 
       response.status(200).send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -448,7 +445,7 @@ const main = async () => {
       host: "0.0.0.0",
     })
     .then((address) => {
-      server.log.info(`Server listening on ${address}`);
+      console.info(`Server listening on ${address}`);
     });
 };
 
