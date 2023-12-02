@@ -239,7 +239,7 @@ const main = async () => {
           }
           try {
             // チャンネルIDを追加する
-            await addTargetChannelList(channelId);
+            await addSourceChannelList(channelId);
           } catch (error) {
             console.error(error);
             // もし、チャンネルIDの追加に失敗した場合は500エラーを返す
@@ -280,7 +280,7 @@ const main = async () => {
           }
           try {
             // チャンネルIDを追加する
-            await addSourceChannelList(channelId);
+            await addTargetChannelList(channelId);
           } catch (error) {
             console.error(error);
             // もし、チャンネルIDの追加に失敗した場合は500エラーを返す
@@ -303,20 +303,6 @@ const main = async () => {
           });
         }
         case REMOVE_SOURCE_CHANNEL_ID_COMMAND.name: {
-          // 送信ユーザを取得
-          const user = message.member.user;
-
-          // もし投稿者が指定されたユーザでない場合は400エラーを返す
-          if (user.id !== user_id) {
-            console.error("User is not allowed");
-            return response.status(200).send({
-              type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-              data: {
-                content: `投稿者が不正です`,
-              },
-            });
-          }
-
           // チャンネルIDを取得
           const channelId = message.data.options.find(
             (option) =>
@@ -359,20 +345,6 @@ const main = async () => {
           });
         }
         case REMOVE_TARGET_CHANNEL_ID_COMMAND.name: {
-          // 送信ユーザを取得
-          const user = message.member.user;
-
-          // もし投稿者が指定されたユーザでない場合は400エラーを返す
-          if (user.id !== user_id) {
-            console.error("User is not allowed");
-            return response.status(200).send({
-              type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-              data: {
-                content: `投稿者が不正です`,
-              },
-            });
-          }
-
           // チャンネルIDを取得
           const channelId = message.data.options.find(
             (option) =>
