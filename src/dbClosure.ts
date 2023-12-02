@@ -23,7 +23,7 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
       | Set<string>
       | undefined;
     if (cache) {
-      console.debug(cache);
+      // console.debug(cache);
       return cache;
     }
 
@@ -54,6 +54,7 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
       | (TextChannel | undefined)[]
       | undefined;
     if (cache) {
+      console.debug("cache hit", cache);
       return cache;
     }
 
@@ -76,6 +77,8 @@ const dbClosure = async (db_url: string, discord_client: Client) => {
 
     // キャッシュにデータを追加する
     await memory_cache.set("target_channel_list", result);
+
+    console.debug("cache miss", result);
 
     // 結果を返却する
     return result;
