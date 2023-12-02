@@ -164,6 +164,16 @@ const main = async () => {
     // リクエストのメッセージを取得
     const message = request.body;
 
+    // PINGの場合はPONGを返す
+    // メッセージのタイプに応じて処理を分岐
+    if (message.type === InteractionType.PING) {
+      // もし、メッセージのタイプがPONGだった場合はPONGを返す
+      server.log.info("Handling Ping request");
+      response.send({
+        type: InteractionResponseType.PONG,
+      });
+    }
+
     // 送信ユーザを取得
     const user = message.member.user;
 
@@ -178,14 +188,7 @@ const main = async () => {
       });
     }
 
-    // メッセージのタイプに応じて処理を分岐
-    if (message.type === InteractionType.PING) {
-      // もし、メッセージのタイプがPONGだった場合はPONGを返す
-      server.log.info("Handling Ping request");
-      response.send({
-        type: InteractionResponseType.PONG,
-      });
-    } else if (message.type === InteractionType.APPLICATION_COMMAND) {
+    if (message.type === InteractionType.APPLICATION_COMMAND) {
       // もし、メッセージのタイプがAPPLICATION_COMMANDだった場合はコマンドの処理を行う
       server.log.info("Handling Application Command request");
 
