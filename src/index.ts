@@ -61,6 +61,12 @@ const main = async () => {
       return;
     }
 
+    // もしメッセージが"；"で始まっている場合は何もしない
+    if (content.startsWith("；")) {
+      console.error("message starts with '；'");
+      return;
+    }
+
     // メッセージを送信するチャンネルのセットを取得
     const target_channel_list = (await getTargetChannelList()).map(
       (channel) => {
