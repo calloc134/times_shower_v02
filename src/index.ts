@@ -92,17 +92,20 @@ const main = async () => {
       });
     }
 
-    // コンテンツがある場合は送信
-    if (content) {
-      target_channel_list.forEach((channel) => {
-        // チャンネルがない場合は何もしない
-        if (!channel) {
-          return;
-        }
-        // メッセージを送信
-        channel.send(content);
-      });
-    }
+    // https://twitter.comまたはhttps://x.comのリンクを含む場合は、https://fxtwitter.comに置換する
+    const replaced_content1 = content.replace(
+      /https?:\/\/twitter\.com|https?:\/\/x\.com/g,
+      "https://fxtwitter.com"
+    );
+
+    target_channel_list.forEach((channel) => {
+      // チャンネルがない場合は何もしない
+      if (!channel) {
+        return;
+      }
+      // メッセージを送信
+      channel.send(replaced_content1);
+    });
   });
 
   //Botがきちんと起動したか確認
